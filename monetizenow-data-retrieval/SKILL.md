@@ -35,6 +35,21 @@ Prefer lightweight lookups before detailed ones: search to identify the entity, 
 only when you actually need its full details. The exception is pricing, where the model only exists
 on the retrieved rate — see `monetizenow-pricing-strategy`.
 
+## Not every entity supports every operation
+
+The three verbs do not cover the same set of entities, and assuming they do produces a confident
+call against an unsupported type. Two asymmetries are worth knowing before you plan a lookup:
+
+- **`user` can be searched but not described or retrieved.** Resolve a user through search and
+  work from what it returns.
+- **`payment` and `credit_note` can be described and retrieved but not searched.** You cannot go
+  looking for them by attribute — reach them by id, generally one you found on a related record
+  such as an invoice or a credit.
+
+Everything else — account, quote, contract, discount, product, offering, rate, invoice, credit,
+bill group, contact — supports all three. When in doubt, the tool descriptions enumerate their own
+supported values; read them rather than inferring the set from another tool.
+
 ## Superlatives require an explicit sort field
 
 Any ordering or superlative in a request — "latest", "most recent", "newest", "first", "last",
@@ -66,6 +81,22 @@ that may have nothing to do with the request. Ask the user to clarify instead.
 
 **Do not assume a reference id points where you want.** An id field on one entity names *a*
 related record, not necessarily the one relevant to the request. Verify it before relying on it.
+
+## Ask about intent, not about documented defaults
+
+Pausing to ask is right when a request is genuinely open — but it is wrong when the answer is
+already written down. Several write tools document their own defaults and say plainly not to ask
+the user for them; `create_net_new_quote` is the clearest case. Asking anyway reads as diligence
+and lands as friction, because the person is being asked to confirm something the system already
+decided sensibly.
+
+The line is what kind of question it is. A field with a documented default is **settled** — apply
+it. What the user actually wants is **open** — ask. Confirming "should this be a 12-month term?"
+when twelve months is the documented default is noise; asking which of three accounts named Acme
+they meant is not.
+
+This does not soften anything below. A default answers what a field should be when nobody said;
+it never answers which record was meant.
 
 ## When a lookup returns more than one candidate
 

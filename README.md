@@ -17,9 +17,9 @@ matter, the skills point at the tool's own description as the authority.
 
 | Skill | Covers |
 |---|---|
-| [`monetizenow-pricing-strategy`](monetizenow-pricing-strategy/) | The ordered ladder for changing a price, the five pricing models, proration and rounding |
-| [`monetizenow-quote-builder`](monetizenow-quote-builder/) | Quote assembly order, defaults, ramp groups and how to read one back |
-| [`monetizenow-data-retrieval`](monetizenow-data-retrieval/) | Which schema tool answers which question, reading empty and rejected searches, the multiple-match protocol |
+| [`monetizenow-pricing-strategy`](monetizenow-pricing-strategy/) | The ordered ladder for changing a price, the five pricing models, catalog vs custom discounts, verifying proration |
+| [`monetizenow-quote-builder`](monetizenow-quote-builder/) | Quote assembly order, defaults worth trusting, the auto-renew trap, ramp groups, contracts and amendments |
+| [`monetizenow-data-retrieval`](monetizenow-data-retrieval/) | Which schema tool answers which question, which entities support which operations, reading empty and rejected searches, the multiple-match protocol |
 | `monetizenow-data-analysis` | Aggregation and ad-hoc querying of MonetizeNow data through Metabase — see note below |
 
 `monetizenow-data-retrieval` underpins the others — identifying the right record is a prerequisite

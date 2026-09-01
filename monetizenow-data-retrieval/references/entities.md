@@ -16,6 +16,8 @@ the prefix and reject a mismatch, which makes this a fast way to catch a wrong i
 | `offr_` | Offering |
 | `rate_` | Rate |
 | `prod_` | Product |
+| `disc_` | Discount |
+| `ctrct_` | Contract |
 | `bilg_` | Bill group |
 | `invc_` | Invoice |
 | `pymt_` | Payment |
@@ -24,10 +26,9 @@ the prefix and reject a mismatch, which makes this a fast way to catch a wrong i
 | `cont_` | Contact |
 | `usr_` | User |
 
-The prefixes for account, quote, quote offering, bill group, invoice, payment, credit, credit note,
-and contact are stated in the tool descriptions themselves. Those for offering, rate, product, and
-user are taken from the search-parameter schema examples — treat them as reliable but confirm
-against a real id if a call is rejected.
+Most of these are stated in the retrieval tool's own description, including product, discount, and
+contract. The exceptions are offering, rate, and user, which come from search-parameter schema
+examples — treat them as reliable but confirm against a real id if a call is rejected.
 
 ## What each entity is
 
@@ -48,7 +49,23 @@ the rate's `pricing` array and is only present on the full retrieved rate.
 quote offering groups: one root plus any number of ramps, each ramp pointing at the root through its
 schedule. Every offering in a group keeps the same billing frequency.
 
-**Product** — an individual item within an offering.
+**Product** — an individual item within an offering. Searchable in its own right, by `sku`,
+`productType`, `bucketId`, `locked`, and `prorationPolicy`. That last one decides whether a partial
+billing period is charged pro rata (`PRORATED`) or in full (`NON_PRORATED`), which makes the
+product the place to look when a prorated total does not reconcile.
+
+**Contract** — the durable commitment an account holds; quotes sit on it. A retrieved contract
+carries every quote on the contract — the original plus each amendment and renewal — along with its
+term in months, its status, whether it has been renewed, and its renewal terms. For any question
+about history, amendments, or what a customer is currently on, the contract is the right object;
+searching quotes gives you an unordered pile with no indication of which superseded which.
+
+**Discount** — a reduction applied to a quote offering or item. `category` separates a reusable
+catalog discount (`CATALOG`) from one created for a single quote (`CUSTOM_QUOTE_DISCOUNT`), and an
+unfiltered search returns both. `discountType` is `PERCENTAGE` or `FLAT`; `durationType` is
+`ONE_TIME`, `LIMITED` (with `durationMonths`), or `UNLIMITED`. Scope lives on `scopeOfferingId`,
+`scopeProductIds`, and `scopeRateIds` — a discount can match on value and still be scoped to
+something other than what you are pricing.
 
 **Bill group** — a billing grouping under an account, determining how charges are collected
 together. Has its own stats endpoint.

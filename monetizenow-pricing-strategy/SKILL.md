@@ -45,7 +45,14 @@ achieves the desired price — once one works, do not attempt the later ones.
 3. **Create an account-based rate.** Note that this requires a pricing configuration for *every*
    product on the offering, optional ones included — see the `create_account_based_rate` tool
    description for the exact requirement.
-4. **Apply a discount**, at the quote offering or the item level.
+4. **Apply a discount**, at the quote offering or the item level. Rung 4 has the same shape as
+   rung 2: look for an existing discount before inventing one. Discounts are searchable, and
+   `category` separates a reusable catalog discount (`CATALOG`) from one created for a single
+   quote (`CUSTOM_QUOTE_DISCOUNT`) — an unfiltered search returns both, so filter when you mean
+   one. Prefer an existing `CATALOG` discount that fits; fall back to a custom one only when
+   none does. Check `discountType` (`PERCENTAGE` vs `FLAT`), `durationType` (`ONE_TIME`,
+   `LIMITED`, `UNLIMITED`) and the scope fields, since a discount that matches on value can still
+   be scoped to the wrong offering, product, or rate.
 
 The order reflects how invasive each option is. Rung 1 edits a field on this one offering. Rung 2
 reuses something the catalog already has. Rung 3 adds a durable new artifact scoped to the account.
@@ -67,9 +74,22 @@ before you go looking for a bug.
 
 **Proration** reflects how long an offering is active within the contract term. The term is split
 into billing segments by the rate's billing frequency, and proration is based on the number of
-active days in each segment. Assume `MONTH_BASED` proration. If you cannot account for an
-unexpected total, it is legitimate to tell the user the tenant's proration model may be
-responsible while being clear that you cannot verify it — that is a real limit, not a guess.
+active days in each segment.
+
+Do not treat proration as an unverifiable assumption — it is observable, in two places, and
+checking beats guessing:
+
+- **Whether a partial period prorates at all** is the product's `prorationPolicy`: `PRORATED`
+  charges pro rata, `NON_PRORATED` charges the full period. It is both a field on the product and
+  a filter you can search on, so a mixed quote may well contain products with different policies.
+- **What was actually applied** is on the records themselves — a quote offering carries
+  `debitProrationMultiplier` and `creditProrationMultiplier`, and an invoice item carries
+  `prorationMultiplier`. Read the multiplier rather than reconstructing it from dates.
+
+So when a total does not reconcile, retrieve the product to see its policy and read the multiplier
+off the offering or invoice item. Only after both have been checked, and still do not explain the
+number, is it fair to tell the user something tenant-level may be responsible — and say precisely
+what you did check.
 
 **Rounding**: small per-segment variances, on the order of a cent, are rounding artifacts and not
 worth raising. Larger discrepancies are worth flagging as potential issues rather than explaining

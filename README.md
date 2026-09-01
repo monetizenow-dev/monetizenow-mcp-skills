@@ -20,16 +20,16 @@ matter, the skills point at the tool's own description as the authority.
 | [`monetizenow-pricing-strategy`](monetizenow-pricing-strategy/) | The ordered ladder for changing a price, the five pricing models, catalog vs custom discounts, verifying proration |
 | [`monetizenow-quote-builder`](monetizenow-quote-builder/) | Quote assembly order, defaults worth trusting, the auto-renew trap, ramp groups, contracts and amendments |
 | [`monetizenow-data-retrieval`](monetizenow-data-retrieval/) | Which schema tool answers which question, which entities support which operations, reading empty and rejected searches, the multiple-match protocol |
-| [`monetizenow-data-analysis`](monetizenow-data-analysis/) | Aggregation and ad-hoc querying of MonetizeNow data through Metabase |
+| [`monetizenow-data-analysis`](monetizenow-data-analysis/) | Choosing the API or SQL, schema and enum-value discovery, aggregation through Metabase |
 
 `monetizenow-data-retrieval` underpins the others — identifying the right record is a prerequisite
 for pricing it, quoting it, or reporting on it — but each skill installs independently.
 
-`monetizenow-data-analysis` predates the other three and is maintained separately. It is tracked
-here as source, unpacked from the `.skill` archive it previously shipped as, with its content
-unchanged — including a known gap: it names `get_accounts`, `get_invoice`, and `get_quote`, which
-the server does not publish, and attributes the Metabase query tools to the MonetizeNow server.
-Its discover-then-query workflow is sound; the tool references around it need a refresh.
+`monetizenow-data-analysis` predates the other three and is tracked here as source, unpacked from
+the `.skill` archive it previously shipped as. Its tool references have since been corrected: it
+had named several tools the server does not publish and attributed the Metabase query tools to the
+MonetizeNow server. It now distinguishes the two servers and covers reading enum literals with
+`get_field_values` before filtering on them.
 
 ## Installing
 

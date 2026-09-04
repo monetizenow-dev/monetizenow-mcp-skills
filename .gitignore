@@ -1,0 +1,4 @@
+# Packaged skill archives are build artifacts, not source. Skills are tracked as
+# SKILL.md (plus references/) so changes show up in a diff; package for
+# distribution when needed.
+*.skill

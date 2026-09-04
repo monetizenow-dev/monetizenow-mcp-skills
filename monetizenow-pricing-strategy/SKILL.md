@@ -16,7 +16,7 @@ moves the total. Work the ladder instead.
 ## Before you can price anything: find the pricing model
 
 The right rung depends entirely on how the offering's rate calculates price, so establish that
-first. The pricing model lives in `priceModel`, inside the rate's `pricing` array — and that array
+first. The pricing model lives in `priceModel`, inside the rate's `prices` array — and that array
 is only present on the **full rate entity**. Search results do not include it.
 
 So: retrieve the rate. An agent that searches for the rate and reads the summary cannot tell which
@@ -27,7 +27,8 @@ rung applies and will guess.
 | `VOLUME` | `unit_price × quantity`. May itself include tiered volume-based pricing. |
 | `TIERED` | Incremental volume-based pricing determined by tier thresholds. |
 | `FLAT` | A fixed price, independent of quantity. |
-| `PERCENT` (of total) | A percentage of other products on the quote — e.g. support at 10% of license. |
+| `PERCENT_OF_TOTAL` | A percentage of other products on the quote — e.g. support at 10% of license. |
+| `BLOCK` | Priced in fixed blocks of `blockSize` units rather than per unit. `blockSize` is required on the price when this model is used. |
 | `CUSTOM` | A per-unit price set by hand during quoting. |
 
 ## The ladder

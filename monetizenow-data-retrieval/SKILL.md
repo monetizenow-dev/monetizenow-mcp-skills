@@ -46,8 +46,8 @@ call against an unsupported type. Two asymmetries are worth knowing before you p
   looking for them by attribute — reach them by id, generally one you found on a related record
   such as an invoice or a credit.
 
-Everything else — account, quote, contract, discount, product, offering, rate, invoice, credit,
-bill group, contact — supports all three. When in doubt, the tool descriptions enumerate their own
+Everything else — account, quote, contract, subscription, discount, product, offering, rate,
+invoice, credit, bill group, contact — supports all three. When in doubt, the tool descriptions enumerate their own
 supported values; read them rather than inferring the set from another tool.
 
 ## Superlatives require an explicit sort field

@@ -13,6 +13,7 @@ the prefix and reject a mismatch, which makes this a fast way to catch a wrong i
 | `acct_` | Account |
 | `quot_` | Quote |
 | `quof_` | Quote offering |
+| `subs_` | Subscription |
 | `offr_` | Offering |
 | `rate_` | Rate |
 | `prod_` | Product |
@@ -26,8 +27,8 @@ the prefix and reject a mismatch, which makes this a fast way to catch a wrong i
 | `cont_` | Contact |
 | `usr_` | User |
 
-Most of these are stated in the retrieval tool's own description, including product, discount, and
-contract. The exceptions are offering, rate, and user, which come from search-parameter schema
+Most of these are stated in the retrieval tool's own description, including product, discount,
+contract, and subscription. The exceptions are offering, rate, and user, which come from search-parameter schema
 examples — treat them as reliable but confirm against a real id if a call is rejected.
 
 ## What each entity is
@@ -43,7 +44,7 @@ mandatory or optional through `offeringProducts[*].isMandatory`.
 **Rate** — the pricing behavior attached to an offering. Two properties matter most: the billing
 frequency, which sets the interval at which the calculated price is charged, and the pricing model,
 which determines how the price is calculated at all. The pricing model lives in `priceModel` inside
-the rate's `pricing` array and is only present on the full retrieved rate.
+the rate's `prices` array and is only present on the full retrieved rate.
 
 **Quote offering** — an offering placed on a quote, at a rate, for a span. Quote offerings belong to
 quote offering groups: one root plus any number of ramps, each ramp pointing at the root through its
@@ -59,6 +60,16 @@ carries every quote on the contract — the original plus each amendment and ren
 term in months, its status, whether it has been renewed, and its renewal terms. For any question
 about history, amendments, or what a customer is currently on, the contract is the right object;
 searching quotes gives you an unordered pile with no indication of which superseded which.
+
+**Subscription** — what the customer actually has running, as opposed to what was quoted. A
+retrieved subscription carries its currently-active items (each with its product and negotiated
+price), its offering, and its discounts. Items removed by a prior amendment are not included, so a
+subscription shows the present state rather than a history — use the contract for that. Searchable
+by account, bill group, offering, rate, and by billing and provisioning status.
+
+A quote is the proposal, a contract is the commitment, and a subscription is the live result. When
+a question is about what someone is being billed for right now, the subscription is usually the
+right object.
 
 **Discount** — a reduction applied to a quote offering or item. `category` separates a reusable
 catalog discount (`CATALOG`) from one created for a single quote (`CUSTOM_QUOTE_DISCOUNT`), and an

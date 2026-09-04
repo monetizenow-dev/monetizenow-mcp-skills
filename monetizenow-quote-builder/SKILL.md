@@ -23,12 +23,21 @@ judgment calls that decide whether the resulting quote is structurally correct.
 
    Create and update express the span differently — one takes a length, the other an end date —
    so read the description of whichever you are calling instead of carrying fields across.
+   Converting a length into an end date is not arithmetic you should do from memory: span dates
+   are inclusive, and adding months clamps at short months. The tool description gives the exact
+   rule and a worked example; follow it rather than reasoning it out.
 
    One term does not behave like the others: **auto-renew is ignored on create.** The platform
    takes it from the tenant's quote settings, so a value passed here is silently dropped. If the
    user asked for a specific auto-renew setting, read it off the returned quote and follow up
    with an update when it differs. This is the one default worth verifying every time.
 3. **Add the quote offerings**, one call per offering. Ramps are a special case; see below.
+
+   Searching offerings by name or attribute returns only `ACTIVE` ones unless you say otherwise,
+   which is what you want while quoting — an inactive offering is not sellable. Two consequences:
+   a name that finds nothing may exist in another state, and a search targeting one specific
+   offering by id is not filtered this way, so it can return an inactive one. Check the status
+   before building on a result you reached by id.
 4. **Price them.** Pricing is its own ordered procedure — see `monetizenow-pricing-strategy`. Do
    not reach for a discount just because it is the quickest way to move a total.
 5. **Verify** by retrieving the finished quote and reading its actual state. Describe what the
@@ -97,7 +106,37 @@ live. Reconstructing that by searching quotes account-by-account gets you an uno
 indication of which superseded which.
 
 So when a request says "extend", "amend", "renew", or asks what the customer is currently on, start
-from the contract rather than the newest quote you can find.
+from the contract rather than the newest quote you can find. Search `object_type` "contract" to get
+there — not the account.
+
+## Changing an existing commitment: amend or renew
+
+A change to something the customer already has is not a net new quote. Two dedicated tools exist,
+and picking between them is the decision this skill can help with:
+
+- **`amend_contract`** changes the commitment in place. It opens a DRAFT AMENDMENT quote on the
+  **same** contract, pre-populated with the contract's current offerings and items.
+- **`renew_contract`** continues the commitment into a new term. It opens a DRAFT RENEWAL quote
+  which, once processed, creates a **new** contract pointing back at this one.
+
+Three things follow that are easy to get wrong:
+
+**Neither tool changes anything by itself.** Both leave a draft for review, and the contract is
+untouched until that draft is processed. Renewal in particular never happens outright — if a user
+asks you to just renew something, say that leaving a draft is as far as it goes.
+
+**A net new quote cannot be either of these.** `create_net_new_quote` has no contract linkage, so
+labelling a quote as a renewal there produces a quote attached to nothing. These tools are the only
+route.
+
+**Edit the draft, do not rebuild it.** What comes back is an ordinary quote — adjust it with
+`update_quote`, `create_quote_offering` and `update_quote_offering`, exactly as in the assembly
+steps above. The offerings that arrive pre-populated are the existing commitment; recreating them
+produces duplicates rather than changes. When describing what an amendment does, read it off the
+per-item amendment status rather than diffing by hand.
+
+Each tool documents its own preconditions, and they differ in ways worth reading rather than
+assuming — the states that block an amendment are not the states that block a renewal.
 
 ## Related skills
 

@@ -82,22 +82,6 @@ that may have nothing to do with the request. Ask the user to clarify instead.
 **Do not assume a reference id points where you want.** An id field on one entity names *a*
 related record, not necessarily the one relevant to the request. Verify it before relying on it.
 
-## Ask about intent, not about documented defaults
-
-Pausing to ask is right when a request is genuinely open — but it is wrong when the answer is
-already written down. Several write tools document their own defaults and say plainly not to ask
-the user for them; `create_net_new_quote` is the clearest case. Asking anyway reads as diligence
-and lands as friction, because the person is being asked to confirm something the system already
-decided sensibly.
-
-The line is what kind of question it is. A field with a documented default is **settled** — apply
-it. What the user actually wants is **open** — ask. Confirming "should this be a 12-month term?"
-when twelve months is the documented default is noise; asking which of three accounts named Acme
-they meant is not.
-
-This does not soften anything below. A default answers what a field should be when nobody said;
-it never answers which record was meant.
-
 ## When a lookup returns more than one candidate
 
 This cannot be pre-empted by asking better questions up front: a perfectly clear request can still

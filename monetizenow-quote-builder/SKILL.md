@@ -16,10 +16,8 @@ judgment calls that decide whether the resulting quote is structurally correct.
 
 1. **Resolve the account** first. A quote is created against an account, so an ambiguous account
    name has to be settled before anything is written. See `monetizenow-data-retrieval`.
-2. **Create the quote.** The contract terms all have documented defaults, and the tool
-   description says plainly not to ask the user for them. Take it at its word: asking a rep to
-   confirm a contract length that already defaults to twelve months is friction, not diligence.
-   Ask only about what the request actually leaves open.
+2. **Create the quote.** Apply the defaults the tool documents and ask only about what the
+   request actually leaves open.
 
    Create and update express the span differently — one takes a length, the other an end date —
    so read the description of whichever you are calling instead of carrying fields across.
@@ -106,8 +104,8 @@ live. Reconstructing that by searching quotes account-by-account gets you an uno
 indication of which superseded which.
 
 So when a request says "extend", "amend", "renew", or asks what the customer is currently on, start
-from the contract rather than the newest quote you can find. Search `object_type` "contract" to get
-there — not the account.
+from the contract rather than the newest quote you can find. To get there, call
+`monetizenow_search_objects` with `object_type` set to `"contract"` — not from the account.
 
 ## Changing an existing commitment: amend or renew
 

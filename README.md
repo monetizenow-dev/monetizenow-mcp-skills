@@ -4,14 +4,14 @@ Agent Skills for working with the MonetizeNow MCP server from Claude Code or Cla
 
 ## Why these exist
 
-The hosted MonetizeNow AI client carries a large body of operating knowledge in its system prompt.
-An MCP client receives the server's tool descriptions and nothing else, so anything that lives only
-in that prompt is knowledge it does not have — the ordered pricing ladder, where a rate's
-`priceModel` actually lives, what a quote offering group is and how to recognize one.
+A tool description can explain one call. It cannot tell you that changing a price has a correct
+order to try things in, that a multi-period offering has to be built as a group, that auto-renew is
+silently ignored on create, or that a contract — not the newest quote — is what answers "what is
+this customer on".
 
-These skills close that gap. They deliberately **do not** restate what the tool descriptions already
-publish, because a second copy of a field list is a copy that goes stale. Where per-call mechanics
-matter, the skills point at the tool's own description as the authority.
+That is what these skills carry: the sequences, choices and traps that span several calls. They
+deliberately **do not** restate what the tool descriptions already publish; where per-call mechanics
+matter, they point at the tool's own description as the authority.
 
 ## Skills
 
@@ -59,14 +59,21 @@ Skills are kept as source rather than packaged `.skill` archives so changes are 
 diff. Package one for distribution when needed; the archive is a build artifact, not the source of
 truth.
 
-## Keeping them current
+## Contributing
 
-These are *derived* from the AI client's prompts rather than generated from them, so the two will
-drift. Before extending a skill, confirm the content is not already published by a tool description
-— otherwise the skill becomes a stale duplicate of the server's own documentation. The analysis
-behind the split, including the procedure for checking it, lives in the `ai-assistant` repo at
-`docs/mcp-skills-candidates.md`.
+One rule matters more than the rest: **check whether the MCP server already says it.**
 
-The pricing ladder in `monetizenow-pricing-strategy` is the piece most worth keeping in sync: it is
-the only content here with no redundant copy anywhere in the tool descriptions, and the most costly
-to have wrong.
+Tool descriptions are published to every client, so anything a tool already documents does not
+belong in a skill. Repeating it creates two sources for the same fact, and the copy here is the one
+that silently goes stale when the server changes. Where per-call mechanics matter, point at the
+tool's own description instead of restating it.
+
+That makes the useful shape of a skill fairly narrow — the things no single tool can tell you:
+
+- **Order.** Which call comes first, and what to check before moving on.
+- **Choice.** Which of several valid routes to take, and why one beats another.
+- **Traps.** Where a call reports success but does not do what it looks like it did.
+
+When the server changes, the skills need a pass. The pricing ladder in
+`monetizenow-pricing-strategy` is the piece most worth re-checking: none of it is duplicated in any
+tool description, so nothing else will catch it drifting.

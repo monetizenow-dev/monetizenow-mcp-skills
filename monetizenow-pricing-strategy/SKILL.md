@@ -36,17 +36,20 @@ rung applies and will guess.
 Walk these **in order**, and **for each quote offering individually**. Stop at the first rung that
 achieves the desired price — once one works, do not attempt the later ones.
 
-1. **Update custom pricing** — available only when the rate uses the `CUSTOM` model. Custom
-   pricing fields on a quote offering are inert for every other model, so setting them on a
-   `VOLUME` rate silently does nothing.
-2. **Find an existing rate that already matches** the desired configuration. Review the offering's
-   available rates. If more than one matches, stop and present them for the user to choose — this
-   is a genuine multiple-match situation, not a judgment call you can make for them. If the user
-   says none of them fit, continue to rung 3 for this offering.
-3. **Create an account-based rate.** Note that this requires a pricing configuration for *every*
-   product on the offering, optional ones included — see the `create_account_based_rate` tool
-   description for the exact requirement.
-4. **Apply a discount**, at the quote offering or the item level. Rung 4 has the same shape as
+1. **Update custom pricing** with `update_quote_offering` — available only when the rate uses the
+   `CUSTOM` model. Custom pricing fields on a quote offering are inert for every other model, so
+   setting them on a `VOLUME` rate silently does nothing.
+2. **Find an existing rate that already matches** the desired configuration, then point the
+   offering at it with `update_quote_offering`. Review the offering's available rates. If more than
+   one matches, stop and present them for the user to choose — this is a genuine multiple-match
+   situation, not a judgment call you can make for them. If the user says none of them fit,
+   continue to rung 3 for this offering.
+3. **Create an account-based rate** with `create_account_based_rate`, then attach it to the
+   offering with `update_quote_offering`. Creating the rate requires a pricing configuration for
+   *every* product on the offering, optional ones included — see that tool's description for the
+   exact requirement.
+4. **Apply a discount** with `update_quote_offering`, at the quote offering or the item level.
+   Rung 4 has the same shape as
    rung 2: look for an existing discount before inventing one. Discounts are searchable, and
    `category` separates a reusable catalog discount (`CATALOG`) from one created for a single
    quote (`CUSTOM_QUOTE_DISCOUNT`) — an unfiltered search returns both, so filter when you mean
@@ -54,6 +57,9 @@ achieves the desired price — once one works, do not attempt the later ones.
    none does. Check `discountType` (`PERCENTAGE` vs `FLAT`), `durationType` (`ONE_TIME`,
    `LIMITED`, `UNLIMITED`) and the scope fields, since a discount that matches on value can still
    be scoped to the wrong offering, product, or rate.
+
+Every rung except creating a rate is applied through `update_quote_offering`, so the ladder is a
+choice about *what to change on the offering*, not about which tool to reach for.
 
 The order reflects how invasive each option is. Rung 1 edits a field on this one offering. Rung 2
 reuses something the catalog already has. Rung 3 adds a durable new artifact scoped to the account.

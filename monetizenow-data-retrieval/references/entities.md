@@ -86,10 +86,28 @@ plain dates rather than zoned timestamps, which matters when filtering.
 
 **Payment** — a payment recorded against an invoice.
 
-**Credit** — a monetary value applied against an account's invoices. Optionally scoped to a bill
-group, and optionally linked to a credit note.
+**Credit** — a balance on the account that gets drawn down against its invoices. It carries both an
+`amount` (what it started as) and a `balance` (what is left), so the balance is what tells you
+whether any of it is still available. A `status` of ACTIVE, INACTIVE, VOID, EXPIRED or APPLIED, an
+optional `expirationDate`, an optional `billGroupId` narrowing it to one bill group, and a `type`
+saying where it came from — PREPAID, SERVICE, or CREDIT_NOTE.
 
-**Credit note** — the document a credit may be linked to.
+**Credit note** — a document issued against one specific **invoice**, not against the account. It
+has line items (`creditNoteItems`), a tax breakdown (`amount`, `amountWithoutTax`, `tax`), a
+`refundable` flag, and `applications` recording where its value went.
+
+The two are related but are not the same thing, and the distinction decides which one answers a
+question:
+
+- A credit note is the **document** that justifies giving value back, and it is always tied to an
+  invoice. Reach for it to answer "why was this credited" or "what on that invoice was credited".
+- A credit is the **spendable balance**, held at the account level. Reach for it to answer "how
+  much does this customer have left" or "what is being applied to their invoices".
+
+Issuing a credit note generally produces a credit — that credit has `type` CREDIT_NOTE and a
+`creditNoteId` pointing back at the document, while the credit note carries a `creditId` pointing
+forward at the balance. A credit whose `type` is PREPAID or SERVICE has no credit note behind it at
+all, so do not assume every credit has one.
 
 **Contact** — a person associated with an account. Note that quote contacts specifically are
 readable but not writable by any available tool.

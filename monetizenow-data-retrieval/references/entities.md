@@ -62,14 +62,32 @@ about history, amendments, or what a customer is currently on, the contract is t
 searching quotes gives you an unordered pile with no indication of which superseded which.
 
 **Subscription** — what the customer actually has running, as opposed to what was quoted. A
-retrieved subscription carries its currently-active items (each with its product and negotiated
-price), its offering, and its discounts. Items removed by a prior amendment are not included, so a
-subscription shows the present state rather than a history — use the contract for that. Searchable
-by account, bill group, offering, rate, and by billing and provisioning status.
+retrieved subscription carries its currently-active items, its offering, and its discounts.
+
+Each item names its product and the units on it, the negotiated price overriding the rate's list
+price, the discounts applied to that item, and the quote item it was created from — so an item can
+be traced back to where it was agreed. Items an amendment deactivated are excluded by default, so
+what you get is the present state, not a history; the contract is where history lives.
+
+Two separate statuses, and they can disagree — do not treat "active" as one flag:
+
+- **Billing status** — whether it is being billed at all: not started, being billed, paused, or
+  terminated.
+- **Provisioning status** — whether the service itself is live: awaiting provisioning, live,
+  paused, or out of service.
+
+A subscription paused for billing is not necessarily out of service, and vice versa. When a request
+turns on whether something is "active", work out which sense is meant.
+
+It also carries the billing period it is currently in, and — when a change landed mid-period — the
+date that change took effect, which is what any prorated charge was calculated from.
+
+Searchable by account, bill group, offering, rate, external id, description, either status, the
+current period, and the proration date.
 
 A quote is the proposal, a contract is the commitment, and a subscription is the live result. When
-a question is about what someone is being billed for right now, the subscription is usually the
-right object.
+a question is about what someone is being billed for right now, the subscription is the right
+object.
 
 **Discount** — a reduction applied to a quote offering or item. `category` separates a reusable
 catalog discount (`CATALOG`) from one created for a single quote (`CUSTOM_QUOTE_DISCOUNT`), and an

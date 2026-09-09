@@ -31,6 +31,24 @@ rung applies and will guess.
 | `BLOCK` | Priced in fixed blocks of `blockSize` units rather than per unit. `blockSize` is required on the price when this model is used. |
 | `CUSTOM` | A per-unit price set by hand during quoting. |
 
+## What the customer pays today is on the subscription
+
+The ladder is about a quote — a price being proposed. When the question is instead what someone is
+paying *now* ("match what they had last year", "why is this more than they pay today"), the answer
+is not on the rate, and reconstructing it from an old quote is guesswork.
+
+Retrieve the subscription. Its items carry the negotiated price that overrides the rate's list
+price, along with the discounts actually applied to each item. That is the real number; the rate
+only tells you what the list price would have been.
+
+Two things to keep in mind while reading one:
+
+- **Items an amendment removed are not there.** A subscription shows the present state, not the
+  history. If the question is what changed, that is a contract question — see
+  `monetizenow-quote-builder`.
+- **Mid-period changes carry the date they took effect**, which is what a prorated charge is
+  calculated from. When a partial-period figure looks wrong, that date is the first thing to check.
+
 ## The ladder
 
 Walk these **in order**, and **for each quote offering individually**. Stop at the first rung that

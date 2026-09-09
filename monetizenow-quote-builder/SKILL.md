@@ -107,6 +107,26 @@ So when a request says "extend", "amend", "renew", or asks what the customer is 
 from the contract rather than the newest quote you can find. To get there, call
 `monetizenow_search_objects` with `object_type` set to `"contract"` — not from the account.
 
+### Contract, subscription, or quote?
+
+Three objects describe the same customer from different angles, and picking the wrong one is the
+usual reason an answer comes out stale or incomplete:
+
+- The **quote** is what was proposed. Useful for what was agreed at a point in time.
+- The **contract** is the commitment, and carries every quote on it. Useful for history — what
+  changed, when, and what renews.
+- The **subscription** is what is actually running and being billed right now. Useful for the
+  present state.
+
+"What is this customer on?" is a subscription question. "What changed at the last amendment?" is a
+contract question. Answering either from the newest quote you can find tends to be wrong, because a
+quote reflects an intent that may have been amended since.
+
+One caveat when reading a subscription: whether it is being **billed** and whether the service is
+**provisioned** are tracked separately, and they can disagree — a paused or terminated subscription
+is not a single flag. If a request turns on whether something is "active", establish which sense is
+meant rather than reading whichever status you see first.
+
 ## Changing an existing commitment: amend or renew
 
 A change to something the customer already has is not a net new quote. Two dedicated tools exist,
@@ -126,6 +146,10 @@ asks you to just renew something, say that leaving a draft is as far as it goes.
 **A net new quote cannot be either of these.** `create_net_new_quote` has no contract linkage, so
 labelling a quote as a renewal there produces a quote attached to nothing. These tools are the only
 route.
+
+**Check what is actually live before you change it.** The amendment arrives pre-populated from the
+contract; the subscription is what the customer is being billed for today. When a user describes
+the current state in a way the draft does not match, the subscription settles it.
 
 **Edit the draft, do not rebuild it.** What comes back is an ordinary quote — adjust it with
 `update_quote`, `create_quote_offering` and `update_quote_offering`, exactly as in the assembly

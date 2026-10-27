@@ -38,13 +38,17 @@ on the retrieved rate — see `monetizenow-pricing-strategy`.
 ## Not every entity supports every operation
 
 The three verbs do not cover the same set of entities, and assuming they do produces a confident
-call against an unsupported type. Two asymmetries are worth knowing before you plan a lookup:
+call against an unsupported type. Three asymmetries are worth knowing before you plan a lookup:
 
 - **`user` can be searched but not described or retrieved.** Resolve a user through search and
   work from what it returns.
 - **`payment` and `credit_note` can be described and retrieved but not searched.** You cannot go
   looking for them by attribute — reach them by id, generally one you found on a related record
   such as an invoice or a credit.
+- **`opportunity` supports all three, but a search result is a summary shape** — no status, no
+  owner, no CRM link, and no list of linked quotes. None of those is filterable either, so "which
+  opportunities are still open" is not a search: narrow it with the filters that do exist, then
+  retrieve the candidates.
 
 Everything else — account, quote, contract, subscription, discount, product, offering, rate,
 invoice, credit, bill group, contact — supports all three. When in doubt, the tool descriptions enumerate their own

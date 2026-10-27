@@ -25,6 +25,7 @@ the prefix and reject a mismatch, which makes this a fast way to catch a wrong i
 | `crdt_` | Credit |
 | `crnt_` | Credit note |
 | `cont_` | Contact |
+| `opp_` | Opportunity |
 | `usr_` | User |
 
 Most of these are stated in the retrieval tool's own description, including product, discount,
@@ -127,8 +128,17 @@ Issuing a credit note generally produces a credit — that credit has `type` CRE
 forward at the balance. A credit whose `type` is PREPAID or SERVICE has no credit note behind it at
 all, so do not assume every credit has one.
 
-**Contact** — a person associated with an account. Note that quote contacts specifically are
-readable but not writable by any available tool.
+**Contact** — a person associated with an account. The contacts on a quote are a separate matter:
+they are set as a whole set rather than one at a time, and a contact has to already belong to the
+quote's account before it can be placed on the quote.
+
+**Opportunity** — the deal a set of quotes belongs to, usually mirroring an opportunity in the
+CRM. It has two identifiers and they are not interchangeable: `id` is the MonetizeNow one
+(`opp_…`), while `customId` is the CRM's own — currently a Salesforce opportunity id. A retrieved
+opportunity carries its status, its CRM owner name, a deep link into the CRM, and **every quote
+linked to it**; none of those appear in a search result. That quote list is the only route from an
+opportunity to its quotes, because quote search has no opportunity filter. Going the other way, a
+retrieved quote carries its opportunity nested inside it.
 
 **User** — a person with access to the tenant. When the user says "my" or refers to their own
 profile, resolve it from the current user's context rather than searching by name.

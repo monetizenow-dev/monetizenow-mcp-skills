@@ -87,10 +87,17 @@ misleading when the answer is "one product ramping across three years".
 
 ## What cannot be done
 
-Some things a quote shows are not writable by any tool — quote contacts are the case you will hit,
-and `update_quote` says so directly. When you meet one, say plainly that it is not something you
-can do. Do not offer a manual workaround or a path outside the platform: that reads as a
-capability, and it is not one.
+Some things a quote shows are not writable through the tool you are already holding. `update_quote`
+names the fields it will not take, and an opportunity is the case you will hit beyond the quote
+itself: its name, account and owner are read-only everywhere, and its status is derived from the
+linked quotes rather than stored. When you meet one, say plainly that it is not something you can
+do. Do not offer a manual workaround or a path outside the platform: that reads as a capability,
+and it is not one.
+
+Quote contacts used to belong on that list and no longer do — `set_quote_contacts` sets the
+primary, billing and signer contacts. It replaces the quote's whole contact set rather than
+patching it, so retrieve the quote and resend what should survive. See
+`monetizenow-crm-synced-quote`, where the contacts arrive with the account.
 
 ## Quotes sit on contracts
 
@@ -164,3 +171,5 @@ assuming — the states that block an amendment are not the states that block a 
 
 `monetizenow-data-retrieval` for resolving accounts, offerings, and rates and handling multiple
 matches. `monetizenow-pricing-strategy` for setting or changing any price on the quote.
+`monetizenow-crm-synced-quote` when the customer lives in Salesforce — the account has to be
+pulled across before this skill starts, and the opportunity linked back after it finishes.

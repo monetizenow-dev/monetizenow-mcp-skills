@@ -19,7 +19,7 @@ matter, they point at the tool's own description as the authority.
 |---|---|
 | [`monetizenow-pricing-strategy`](monetizenow-pricing-strategy/) | The ordered ladder for changing a price, the pricing models, catalog vs custom discounts, reading what a customer pays today, verifying proration |
 | [`monetizenow-quote-builder`](monetizenow-quote-builder/) | Quote assembly order, the auto-renew trap, ramp groups, choosing between quote, contract and subscription, amending and renewing |
-| [`monetizenow-crm-synced-quote`](monetizenow-crm-synced-quote/) | The order that makes a quote land on the right Salesforce records, pulling an account and its contacts from the CRM, stamping the resulting opportunity with the CRM id, putting contacts on a quote |
+| [`monetizenow-crm-synced-quote`](monetizenow-crm-synced-quote/) | The order that makes a quote land on the right Salesforce records, pulling an account and its contacts from the CRM, building the opportunity against its CRM id before the quote exists, the integration race that order avoids, putting contacts on a quote |
 | [`monetizenow-sync-migration`](monetizenow-sync-migration/) | Enabling MonetizeNow sync across Salesforce accounts and contacts at volume, cohort assessment, picking the API for the data size, re-driving stuck and errored records |
 | [`monetizenow-data-retrieval`](monetizenow-data-retrieval/) | Which schema tool answers which question, which entities support which operations, reading empty and rejected searches, the multiple-match protocol |
 | [`monetizenow-data-analysis`](monetizenow-data-analysis/) | Choosing the API or SQL, schema and enum-value discovery, aggregation through Metabase |

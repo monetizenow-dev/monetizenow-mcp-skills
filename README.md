@@ -21,6 +21,7 @@ matter, they point at the tool's own description as the authority.
 | [`monetizenow-quote-builder`](monetizenow-quote-builder/) | Quote assembly order, the auto-renew trap, ramp groups, choosing between quote, contract and subscription, amending and renewing |
 | [`monetizenow-data-retrieval`](monetizenow-data-retrieval/) | Which schema tool answers which question, which entities support which operations, reading empty and rejected searches, the multiple-match protocol |
 | [`monetizenow-data-analysis`](monetizenow-data-analysis/) | Choosing the API or SQL, schema and enum-value discovery, aggregation through Metabase |
+| [`monetizenow-orphaned-opportunity-scan`](monetizenow-orphaned-opportunity-scan/) | Read-only scan of Salesforce for opportunities that synced with MonetizeNow but lost their two-way link (needs the Salesforce MCP connector too) |
 
 `monetizenow-data-retrieval` underpins the others — identifying the right record is a prerequisite
 for pricing it, quoting it, or reporting on it — but each skill installs independently.

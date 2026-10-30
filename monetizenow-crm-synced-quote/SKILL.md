@@ -40,6 +40,12 @@ separate call.
 
 Before moving on:
 
+- **A validation error means nothing was created.** The pull checks the Salesforce account before
+  writing, and rejects one it cannot map — for example an empty MonetizeNow Billing Currency
+  (`monetize__BillingCurrency__c`). That is a data fix in Salesforce, not something a retry will
+  change. The tenant's default currency in the package settings is not filled in on this path, so
+  an account that would sync fine from Salesforce can still fail here. Stop before step 2, tell the
+  user which field to fix, and only write to Salesforce yourself if they ask you to.
 - **Read `summary`.** The account can be created while some contacts are not, or while the
   Salesforce record fails to be stamped. Both are reported, not raised. A failed stamp means the
   link back to Salesforce is incomplete — stop and tell the user rather than quoting on it.
@@ -80,19 +86,39 @@ Salesforce id) from step 2. Everything else follows the tool's defaults and
 Then retrieve the opportunity and read it back:
 
 - The new quote should appear in its `quotes`.
-- If it is meant to be the deal's quote and `primaryQuoteId` is empty or points elsewhere, set it
-  with `manage_opportunity` `action: UPDATE`. The opportunity reports its amount and currency from
-  the primary quote, so this is what Salesforce will show as the deal value. If the opportunity
-  already has a primary quote, ask before replacing it.
+- The first quote on an opportunity becomes its primary quote automatically, so on a new
+  opportunity `primaryQuoteId` will already be the new quote. On a reused opportunity that already
+  had a primary quote it will not change. If the new quote is meant to replace it, ask first, then
+  set it with `manage_opportunity` `action: UPDATE`. The opportunity reports its amount and currency
+  from the primary quote, so this is what Salesforce will show as the deal value.
 
 Set the quote's primary and billing contacts from the contacts synced in step 1 with
-`set_quote_contacts`; they cannot be set on create.
+`set_quote_contacts`; they cannot be set on create. If the account has no contacts in MonetizeNow,
+skip this and say so: the quote exists and syncs without them, but it cannot be sent until contacts
+are added.
+
+Getting those contacts across later is not automatic. A newly pulled account is linked in
+Salesforce (`monetize__Id__c` is stamped) but its `monetize__EnableSync__c` stays false, and a
+contact only syncs from Salesforce while its account has sync enabled. Contacts added in Salesforce
+afterwards therefore stay there until someone enables sync on the account — the
+`monetizenow-sync-migration` skill covers that. Say this when reporting an account that was pulled
+with no contacts.
+
+## Confirming it reached Salesforce
+
+The opportunity's `url` can be empty even when the link to Salesforce is working, so it does not
+show whether the sync worked. When a Salesforce connection is available, check the Salesforce side
+directly: the quote syncs as a `monetize__Quote__c` record whose `monetize__Id__c` is the `quot_`
+id, and its `monetize__Opportunity__c` and `monetize__Account__c` should be the Salesforce ids you
+started from. It normally appears within a few seconds of the create. Without a Salesforce
+connection, say the sync was not checked rather than implying it was.
 
 ## Reporting
 
 Say which records were **created** and which were **reused** — an existing account or opportunity
 picked up silently looks, to the user, exactly like a new one. Give the `acct_`, `opp_` and `quot_`
-ids alongside the Salesforce ids they map to, and the opportunity's CRM `url` when it has one.
+ids alongside the Salesforce ids they map to, the opportunity's CRM `url` when it has one, and
+whether the Salesforce quote record was confirmed.
 Report anything from step 1's `summary` that did not land, rather than only the happy path.
 
 ## Related skills
